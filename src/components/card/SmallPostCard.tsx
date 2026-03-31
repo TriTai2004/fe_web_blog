@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import type { Post } from "../../services/post/type";
 import { FiCalendar } from "react-icons/fi";
+import React from "react";
 
 type Props = {
     post: Post;
 };
 
-const SmallPostCard = ({ post }: Props) => {
+const SmallPostCard = React.memo(({ post }: Props) => {
 
     const date = new Date(post.createdAt).toLocaleDateString("vi-VN");
 
@@ -39,6 +40,6 @@ const SmallPostCard = ({ post }: Props) => {
             </div>
         </Link>
     );
-};
+});
 
 export default SmallPostCard;

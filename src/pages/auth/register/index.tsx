@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import usePost from "../../../hooks/usePost";
 import { RegisterService } from "../../../services/auth/register/register";
-import type { RegisterRequest, RegisterResponse } from "../../../services/auth/register/type";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -17,7 +16,7 @@ const Register = () => {
 
     const navigate = useNavigate();
 
-    const { refetch } = usePost<RegisterResponse, RegisterRequest>(RegisterService);
+    const { refetch } = usePost(RegisterService);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -51,16 +50,10 @@ const Register = () => {
         try {
             const data = await refetch({ email: email, password: password });
 
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
-            localStorage.setItem("user", JSON.stringify(data.user));
 
             dispatch(logout());
 
-            dispatch(loginSuccess({
-                user: data.user,
-                accessToken: data.accessToken,
-            }));
+            dispatch(loginSuccess(data));
 
             navigate("/");
 
@@ -71,6 +64,10 @@ const Register = () => {
                 toast.error("Có lỗi xảy ra!");
             }
         }
+    }
+
+    const registerGG = () => {
+        window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`;
     }
 
     return (
@@ -196,7 +193,10 @@ const Register = () => {
                             >
                                 Đăng ký
                             </button>
-
+                            <button onClick={() => registerGG()} type="button" className="w-full flex items-center gap-2 justify-center my-3 bg-white border border-gray-500/30 py-2.5 rounded-full text-gray-800">
+                                <img className="h-4 w-4" src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" alt="googleFavicon" />
+                                Đăng nhập với google
+                            </button>
                             <p className="text-sm text-center text-gray-500 dark:text-gray-400">
                                 Đã có tài khoản?{" "}
                                 <Link to={"/login"}
@@ -205,6 +205,7 @@ const Register = () => {
                                     Đăng nhập
                                 </Link>
                             </p>
+
 
                         </form>
                     </div>

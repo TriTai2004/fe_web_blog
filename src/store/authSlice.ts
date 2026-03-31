@@ -1,51 +1,61 @@
-import { createSlice, } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-
-interface User {
-    id: string;
-    email: string;
-    role: string;
-}
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { Account } from "../services/auth/get-me/type";
+import { fetchUser } from "../services/auth/get-me/getMe";
 
 interface AuthState {
-    user: User | null;
-    accessToken: string | null;
+    user: Account | null;
+    isLoading: boolean;
 }
 
-// Lấy từ localStorage khi reload
 const savedUser = localStorage.getItem("user");
-const savedToken = localStorage.getItem("accessToken");
 
 const initialState: AuthState = {
     user: savedUser ? JSON.parse(savedUser) : null,
-    accessToken: savedToken || null,
+    isLoading: true,
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        loginSuccess: (
-            state,
-            action: PayloadAction<{ user: User; accessToken: string }>
-        ) => {
-            state.user = action.payload.user;
-            state.accessToken = action.payload.accessToken;
+        loginSuccess: (state, action: PayloadAction<Account>) => {
+            state.user = action.payload;
+            state.isLoading = false;
 
-            // Lưu lại khi login
-            localStorage.setItem("user", JSON.stringify(action.payload.user));
-            localStorage.setItem("accessToken", action.payload.accessToken);
+            localStorage.setItem("user", JSON.stringify(action.payload));
         },
 
         logout: (state) => {
             state.user = null;
-            state.accessToken = null;
+            state.isLoading = false;
 
             localStorage.removeItem("user");
-            localStorage.removeItem("accessToken");
+        },
+
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(fetchUser.fulfilled, (state, action: PayloadAction<Account>) => {
+                state.user = action.payload;
+                state.isLoading = false;
+
+                localStorage.setItem("user", JSON.stringify(action.payload));
+            })
+            .addCase(fetchUser.rejected, (state) => {
+                state.user = null;
+                state.isLoading = false;
+
+                localStorage.removeItem("user");
+            });
+
+    }
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, setLoading } = authSlice.actions;
 export default authSlice.reducer;

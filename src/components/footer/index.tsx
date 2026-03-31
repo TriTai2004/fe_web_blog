@@ -1,12 +1,13 @@
+import React from "react";
 import { FaFacebookF, FaInstagram, FaGithub } from "react-icons/fa";
 
-const Footer = () => {
+const Footer = React.memo(() => {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-6 py-12">
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          
+
           {/* Company Info */}
           <div>
             <h2 className="text-2xl font-bold text-white mb-4">
@@ -87,6 +88,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;

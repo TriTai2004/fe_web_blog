@@ -1,8 +1,7 @@
 import { useState } from "react";
 import usePost from "../../../hooks/usePost";
 import { login } from "../../../services/auth/login/login";
-import type { LoginRequest, LoginResponse } from "../../../services/auth/login/type";
-import { loginSuccess, logout } from "../../../store/authSlice";
+import { loginSuccess } from "../../../store/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../store/store";
 import axios from "axios";
@@ -11,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
 
-    const { refetch } = usePost<LoginResponse, LoginRequest>(login);
+    const { refetch } = usePost(login);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -42,28 +41,24 @@ const Login = () => {
 
         try {
             const data = await refetch({ email, password });
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
-            localStorage.setItem("user", JSON.stringify(data.user));
 
-            dispatch(logout());
-
-            dispatch(loginSuccess({
-                user: data.user,
-                accessToken: data.accessToken,
-            }))
+            dispatch(loginSuccess(data));
 
             navigate("/");
 
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                if (error?.response?.status == 404) {
+                if (error?.response?.status == 401) {
                     toast.warning("Tài khoản hoặc mật khẩu không đúng!");
                 }
             }
         }
     };
+
+    const loginGG = () => {
+        window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`;
+    }
 
 
     return (
@@ -163,6 +158,7 @@ const Login = () => {
                             Đăng nhập
                         </button>
 
+
                         <p className="text-sm text-center text-gray-500 dark:text-gray-400">
                             Chưa có tài khoản?{" "}
                             <Link to={"/register"}
@@ -171,6 +167,10 @@ const Login = () => {
                                 Đăng ký
                             </Link>
                         </p>
+                        <button onClick={() => loginGG()} type="button" className="w-full flex items-center gap-2 justify-center my-3 bg-white border border-gray-500/30 py-2.5 rounded-full text-gray-800">
+                            <img className="h-4 w-4" src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" alt="googleFavicon"/>
+                                Đăng nhập với google
+                        </button>
 
                     </form>
                 </div>

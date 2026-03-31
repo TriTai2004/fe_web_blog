@@ -3,17 +3,20 @@ import { BiSearch, BiUser, BiMenu } from "react-icons/bi";
 import useGet from "../../hooks/useFetch";
 import { getCategory } from "../../services/category/categoryService";
 import "./stype.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Category } from "../../services/category/type";
 import { getPosts } from "../../services/post/postService";
 import type { Post } from "../../services/post/type";
-const Header = () => {
+const Header = React.memo(() => {
 
     const [search, setSearch] = useState(false);
     const [categoryOpen, setCategoryOpen] = useState(false);
     const [data, setData] = useState<{ data: Category[] } | null>(null);
     const [keyword, setKeyword] = useState("");
     const [posts, setPosts] = useState<Post[] | null>(null);
+
+    const navigate = useNavigate();
+
 
     const { refetch } = useGet(getCategory);
 
@@ -42,11 +45,15 @@ const Header = () => {
         }
 
         timeout.current = setTimeout(async () => {
-            const res = await fetchPosts({ page: 0, size: 5, search: keyword});
+            const res = await fetchPosts({ page: 0, size: 5, search: keyword });
             setPosts(res.data);
         }, 900);
 
     }, [keyword]);
+
+    const backHome = () => {
+        navigate("/");
+    }
 
     return (
         <>
@@ -54,7 +61,7 @@ const Header = () => {
                 <div className="max-w-screen-xl mx-auto flex items-center justify-between py-3 px-4">
 
                     {/* Logo */}
-                    <div className="flex items-center gap-3">
+                    <div onClick={() => backHome()} className="flex items-center gap-3 cursor-pointer">
                         <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-600">
                             <img
                                 src="https://lh3.googleusercontent.com/ogw/AF2bZyhjveqDqJ3rTnZn5fOdx6Z21kFmkRkZ8d1yICvN3hYbMg=s32-c-mo"
@@ -180,6 +187,6 @@ const Header = () => {
             )}
         </>
     );
-};
+});
 
 export default Header;

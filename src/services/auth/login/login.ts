@@ -1,12 +1,11 @@
-import type { AxiosResponse } from "axios";
 import axiosInstance from "../../../lib/axios";
-import type { LoginRequest, LoginResponse } from "./type";
+import type { LoginRequest } from "./type";
 
 const apiLogin = "/api/auth";
 
 
 
-export const login = (data: LoginRequest) : Promise<AxiosResponse<LoginResponse>> =>{
+export const login = (data: LoginRequest)  =>{
 
     return axiosInstance.post(`${apiLogin}/login`, data);
 }

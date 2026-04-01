@@ -14,6 +14,7 @@ const Header = React.memo(() => {
     const [data, setData] = useState<{ data: Category[] } | null>(null);
     const [keyword, setKeyword] = useState("");
     const [posts, setPosts] = useState<Post[] | null>(null);
+    const [show, setShow] = useState(false);
 
     const navigate = useNavigate();
 
@@ -142,9 +143,32 @@ const Header = React.memo(() => {
                         </button>
 
                         {/* user */}
-                        <button className="hover:text-blue-400">
-                            <BiUser size={26} />
-                        </button>
+                        <div  className=" relative">
+                            <BiUser onClick={() => setShow(!show)} size={26} />
+                            { show && (
+                                <div className="absolute end-0 py-2 z-10 w-40 shadow-sm">
+                                <ul className="bg-white rounded text-gray-950">
+                                    <li onClick={() => {
+                                        navigate("/information");
+                                        setShow(!show);
+                                    }} className="cursor-pointer hover:bg-gray-100 transition-all p-2 text-center">
+                                        Thông tin
+                                    </li>
+                                    <li className="cursor-pointer hover:bg-gray-100 transition-all p-2 text-center">
+                                        Đăng xuất
+                                    </li>
+                                    <li
+                                        onClick={() => {
+                                            navigate("/login");
+                                            setShow(!show);
+                                        }}
+                                        className="cursor-pointer hover:bg-gray-100 transition-all p-2 text-center">
+                                        Đăng nhập
+                                    </li>
+                                </ul>
+                            </div>
+                            )}
+                        </div>
 
                     </div>
 

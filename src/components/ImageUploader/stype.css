@@ -1,0 +1,28 @@
+.upload-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden; 
+  transition: 0.2s;
+  color: #666;
+}
+
+.upload-avatar:hover {
+  border-color: #4facfe;
+  color: #4facfe;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-text {
+  font-size: 14px;
+}

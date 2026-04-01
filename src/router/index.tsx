@@ -9,6 +9,7 @@ import PostDetail from "../pages/client/post-detail";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import CategoryPage from "../pages/client/category-post";
+import Information from "../pages/client/account-infomation";
 
 
 const router = createBrowserRouter([
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
                 index: true,
                 path: "category/:slugCategory",
                 element: <CategoryPage />
+            },
+            {
+                index: true,
+                path: "/information",
+                element: <Information />
             },
 
         ]

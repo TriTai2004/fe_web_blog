@@ -3,7 +3,7 @@ import CommentItem from "./CommentItem";
 
 interface Props {
   comments: CommentType[];
-  onLike: (id: string) => void;
+  onLike: (comment: CommentType) => void;
   fetchReplies: (params: Record<string, unknown>) => Promise<CommentResponse>;
 
 }
@@ -11,9 +11,9 @@ interface Props {
 const CommentList = ({ comments, onLike, fetchReplies }: Props) => {
   return (
     <div className="flex flex-col gap-3">
-      {comments.map((comment) => (
+      {comments.map((comment, index) => (
         <CommentItem
-          key={comment.id}
+          key={comment.id + index}
           comment={comment}
           onLike={onLike}
           fetchReplies={fetchReplies}

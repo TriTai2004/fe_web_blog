@@ -16,3 +16,11 @@ export const getComment = (params: Record<string, unknown>) => {
     return axiosInstance.get(`${api}/findAll${filter}`);
 
 }
+
+export const likeComment = ({ commentId }: { commentId: string }) => {
+
+    const res = axiosInstance.post(`/api/like-comments`, { commentId });
+
+    return res;
+
+}

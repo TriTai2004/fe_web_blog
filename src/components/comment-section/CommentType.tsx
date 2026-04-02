@@ -15,6 +15,7 @@ export interface CommentType {
   totalItems: number;
   totalPages: number;
   parentAuthorName: string;
+  authorEmail: string;
 }
 export interface CommentResponse {
   data: CommentType[];

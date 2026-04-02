@@ -10,10 +10,8 @@ import { getLike, likeOrDislike } from "../../../services/likePost/likeService";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
 import { toast } from "react-toastify";
-import FormComment from "../../../components/comment/formcomment";
 import usePost from "../../../hooks/usePost";
 import { postComment } from "../../../services/comment/CommentService";
-import type { CommentRequest } from "../../../services/comment/type";
 import CommentSection from "../../../components/comment-section";
 
 
@@ -22,14 +20,11 @@ const PostDetail = () => {
   const [post, setPost] = useState<Post | null | undefined>(null);
   const [isLike, setIsLike] = useState<Like | null | undefined>(null);
   const user = useSelector((state: RootState) => state.auth.user);
-  const [comment, setComment] = useState<string | "">("");
-
   const { postSlug } = useParams();
   const { refetch: fetchPost, loading } = useGet<Post, string>(getPostsSlug);
   const { refetch: handleViews } = useGet<Post, string>(updateViews);
   const { refetch: fetchLike } = useGet(getLike);
   const { refetch: postLike } = useGet(likeOrDislike);
-  const { refetch: createComment } = usePost(postComment);
 
   console.log("render")
 

@@ -70,7 +70,9 @@ const CommentSection = React.memo(({ id }: { id: string }) => {
                 fetchReplies={refetch}
             />
             {totalPage - 1 > page && (
-                <button type="button" onClick={() => setPage(totalPage > page ? page + 1 : totalPage - 1)} disabled={loading} className="text-sm text-center items-center justify-center py-4 flex">
+                <button type="button" onClick={() => setPage(totalPage > page ? page + 1 : totalPage - 1)} 
+                    disabled={loading} 
+                    className="text-sm text-gray-400 text-center mx-auto items-center justify-center py-4 flex">
                     {loading ? (
                         <>
                             <span className="block animate-spin h-4 w-4 border-2 border-gray-500 border-t-transparent rounded-full me-2"></span>

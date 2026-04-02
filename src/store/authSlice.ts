@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Account } from "../services/auth/get-me/type";
 import { fetchUser } from "../services/auth/get-me/getMe";
 
-interface AuthState {
+export interface AuthState {
     user: Account | null;
     isLoading: boolean;
 }

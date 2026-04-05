@@ -6,6 +6,9 @@ import { postComment } from "../../services/comment/CommentService";
 import useGet from "../../hooks/useFetch";
 import type { AxiosResponse } from "axios";
 import CommentForm from "./CommentForm";
+import ActionMenu from "../action-menu";
+import type { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
 
 interface Props {
     comment: CommentType;
@@ -34,6 +37,9 @@ const CommentItem = ({
     const { refetch: createComment } = useGet(postComment);
 
     const isDeep = depth >= MAX_DEPTH;
+
+    const user = useSelector((state: RootState) => state.auth.user);
+
 
     // Load replies
     const loadReplies = async () => {
@@ -88,12 +94,16 @@ const CommentItem = ({
             map.set(newReply.id, newReply);
             return Array.from(map.values());
         });
-
+        
         setShowForm(false);
     };
 
+    const cancelForm = () => {
+        setShowForm(false);
+    }
+
     return (
-        <div className="relative pt-2">
+        <div className="relative pt-5">
             <div className="flex gap-2 sm:gap-3 relative">
                 {depth > 0 && (
                     <div className="absolute left-[-12px] top-4 w-3 h-3 border-l border-b border-gray-300 rounded-bl-lg" />
@@ -104,13 +114,13 @@ const CommentItem = ({
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0 relative z-10"
                 />
 
-                <div className="flex-1 min-w-0">
-                    <div className="bg-gray-100 hover:bg-gray-200 transition rounded-2xl px-3 sm:px-4 py-2 shadow-sm">
-                        <div className="font-semibold text-xs sm:text-sm text-gray-900">
+                <div className="flex-1 min-w-0 relative">
+                    <div className=" transition ">
+                        <div className="text-xs sm:text-sm text-gray-900">
                             {comment.authorName || comment.authorEmail}
                         </div>
 
-                        <div className="text-gray-800 text-xs sm:text-sm break-words">
+                        <div className="text-gray-800 text-xs sm:text-sm py-2">
                             {isDeep && comment.parentAuthorName
                                 ? `@${comment.parentAuthorName}: ${comment.content}`
                                 : comment.content}
@@ -121,23 +131,21 @@ const CommentItem = ({
                         <button
                             onClick={() => {
                                 setLiked(!liked);
-                                onLike(comment)
+                                onLike(comment);
                             }}
-                            className={`hover:text-blue-600 ${liked
-                                ? "text-blue-600 font-medium"
-                                : ""
+                            className={`flex items-center gap-1 hover:text-blue-600 ${liked ? "text-blue-600" : ""
                                 }`}
                         >
-                            <BiLike className="inline mr-1" />
-                            Thích
+                            <BiLike size={16} />
+                            <span>Thích</span>
                         </button>
 
                         <button
                             onClick={() => setShowForm(prev => !prev)}
-                            className="hover:text-blue-600"
+                            className="flex items-center gap-1 hover:rounded-full"
                         >
-                            <BiMessageRounded className="inline mr-1" />
-                            Trả lời
+                            <BiMessageRounded size={16} />
+                            <span>Trả lời</span>
                         </button>
 
                         <span>
@@ -145,9 +153,14 @@ const CommentItem = ({
                         </span>
                     </div>
 
+                    <div className="absolute top-1 end-3">
+                        <ActionMenu isOwner={user?.id === comment.authorId} />
+
+                    </div>
+
                     {showForm && (
                         <div className="mt-2">
-                            <CommentForm onSubmit={handleSubmitReply} />
+                            <CommentForm onSubmit={handleSubmitReply} onCancel={cancelForm} variant="reply"/>
                         </div>
                     )}
 
@@ -185,15 +198,15 @@ const CommentItem = ({
                             />
                         ))}
 
-                        {hasMore && (
+                        {/* {hasMore && (
                             <button
                                 onClick={loadReplies}
                                 disabled={loading}
                                 className="text-xs sm:text-sm text-gray-500 hover:text-blue-600 text-left disabled:opacity-50"
                             >
-                                {loading ? "Đang tải..." : "Xem thêm phản hồi"}
+                                {loading ? "Đang tải..." : `Xem ${Math.min(size, comment.totalReplies)} phản hồi`}
                             </button>
-                        )}
+                        )} */}
                     </div>
                 </div>
             )}
